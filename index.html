@@ -1389,7 +1389,7 @@ function terminarTiempo() {
     document.getElementById("finishButton")
         .style.display = "none";
 
-    document.getElementById("revealButton")
+    document.getElementById("nextTeamButton")
         .style.display = "inline-block";
 
 }
@@ -1550,12 +1550,132 @@ function actualizarMarcador() {
 
 function nextTeam() {
 
-    equipoActual = 2;
+   if (equipoActual === 1){
+       // El Equipo 1 terminó
+       equipoActual = 2;
+       prepararRonda();
 
-    prepararRonda();
+   } else {
+       mostrarRespuestasFinales();
+   }
 
 }
 
+function mostrarRespuestasFinales() {
+
+    detenerTimer();
+
+    const ronda = rondas[rondaActual];
+
+    const grid =
+        document.getElementById("answerGrid");
+
+    grid.innerHTML = "";
+
+    // Título de la corrección
+    const titulo = document.createElement("div");
+
+    titulo.style.gridColumn = "1 / -1";
+    titulo.innerHTML = `
+        <h2 style="text-align:center;">
+            🔎 Respuestas de la misión
+        </h2>
+    `;
+
+    grid.appendChild(titulo);
+
+
+    // ---------------------------------------------------------
+    // EQUIPO 1
+    // ---------------------------------------------------------
+
+    const tituloEquipo1 = document.createElement("div");
+
+    tituloEquipo1.style.gridColumn = "1 / -1";
+
+    tituloEquipo1.innerHTML = `
+        <h3>🔵 ${document.getElementById("scoreTeam1").textContent}</h3>
+    `;
+
+    grid.appendChild(tituloEquipo1);
+
+
+    ronda.equipo1.respuestas.forEach((respuesta, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "answer-item";
+
+        item.innerHTML = `
+            <strong>${index + 1}.</strong>
+            ${respuesta}
+        `;
+
+        grid.appendChild(item);
+
+    });
+
+
+    // ---------------------------------------------------------
+    // EQUIPO 2
+    // ---------------------------------------------------------
+
+    const tituloEquipo2 = document.createElement("div");
+
+    tituloEquipo2.style.gridColumn = "1 / -1";
+
+    tituloEquipo2.innerHTML = `
+        <h3>🟣 ${document.getElementById("scoreTeam2").textContent}</h3>
+    `;
+
+    grid.appendChild(tituloEquipo2);
+
+
+    ronda.equipo2.respuestas.forEach((respuesta, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "answer-item";
+
+        item.innerHTML = `
+            <strong>${index + 1}.</strong>
+            ${respuesta}
+        `;
+
+        grid.appendChild(item);
+
+    });
+
+
+    // Mostrar sección
+    document.getElementById("answers")
+        .classList.add("visible");
+
+
+    // Ocultar botones que ya no necesitamos
+    document.getElementById("nextTeamButton")
+        .style.display = "none";
+
+    document.getElementById("revealButton")
+        .style.display = "none";
+
+
+    // Botón para comenzar la corrección
+    const botonCorreccion =
+        document.createElement("button");
+
+    botonCorreccion.className = "big success";
+
+    botonCorreccion.textContent =
+        "✅ COMENZAR CORRECCIÓN";
+
+    botonCorreccion.onclick =
+        comenzarCorreccion;
+
+    document.querySelector("#answers")
+        .appendChild(botonCorreccion);
+
+}
 
 /* ============================================================
    SIGUIENTE RONDA
